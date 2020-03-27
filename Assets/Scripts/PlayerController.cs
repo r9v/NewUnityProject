@@ -7,7 +7,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Player _player;
-    private Quaternion _targetRotation;
 
     private int _forwardInput = 0;
     private int _sidewayInput = 0;
@@ -18,7 +17,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _player = GetComponent<Player>();
-        _targetRotation = _playerRb.rotation;
     }
 
     private void Update()
@@ -55,23 +53,23 @@ public class PlayerController : MonoBehaviour
         var turnVel = 0f;
         if (_turnInput != 0)
         {
-            turnVel = _turnInput * _player.moveSpeed;
+            turnVel = _turnInput * _player.turnSpeed * Time.deltaTime;
         }
-        _playerRb.rotation *= Quaternion.Euler(0, turnVel, 0);
+        _playerRb.rotation *= Quaternion.AngleAxis(turnVel, _playerRb.transform.up);
     }
 
     private void Run()
     {
-        var forwardVel = 0f;
-        var sidewayVel = 0f;
+        var forwardVel = Vector3.zero;
+        var sidewayVel = Vector3.zero;
         if (_forwardInput != 0)
         {
-            forwardVel = _forwardInput * _player.moveSpeed;
+            forwardVel = _playerRb.transform.forward * _forwardInput * _player.moveSpeed;
         }
         if (_sidewayInput != 0)
         {
-            sidewayVel = _sidewayInput * _player.moveSpeed;
+            sidewayVel = _playerRb.transform.right * _sidewayInput * _player.moveSpeed;
         }
-        _playerRb.velocity = transform.TransformDirection(new Vector3(sidewayVel, 0, forwardVel));
+        _playerRb.velocity = sidewayVel + forwardVel;
     }
 }
