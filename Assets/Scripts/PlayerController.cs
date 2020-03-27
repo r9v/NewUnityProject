@@ -72,6 +72,6 @@ public class PlayerController : MonoBehaviour
         {
             sidewayVel = _sidewayInput * _player.moveSpeed;
         }
-        _playerRb.velocity = new Vector3(sidewayVel, 0, forwardVel);
+        _playerRb.velocity = transform.TransformDirection(new Vector3(sidewayVel, 0, forwardVel));
     }
 }
