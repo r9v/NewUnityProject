@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
         {
             turnVel = _turnInput * _player.moveSpeed;
         }
-        _playerRb.rotation *= Quaternion.Euler(turnVel, 0, 0);
+        _playerRb.rotation *= Quaternion.Euler(0, turnVel, 0);
     }
 
     private void Run()
