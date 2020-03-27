@@ -3,21 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    private Player _player;
+    public Rigidbody player;
+    public float moveSpeed = 3;
+    public float turnSpeed = 70;
 
     private int _forwardInput = 0;
     private int _sidewayInput = 0;
     private int _turnInput = 0;
-
-    private Rigidbody _playerRb { get { return _player.GetComponent<Rigidbody>(); } }
-
-    private void Start()
-    {
-        _player = GetComponent<Player>();
-    }
 
     private void Update()
     {
@@ -53,9 +48,9 @@ public class PlayerController : MonoBehaviour
         var turnVel = 0f;
         if (_turnInput != 0)
         {
-            turnVel = _turnInput * _player.turnSpeed * Time.deltaTime;
+            turnVel = _turnInput * turnSpeed * Time.deltaTime;
         }
-        _playerRb.rotation *= Quaternion.AngleAxis(turnVel, _playerRb.transform.up);
+        player.rotation *= Quaternion.AngleAxis(turnVel, player.transform.up);
     }
 
     private void Run()
@@ -64,12 +59,12 @@ public class PlayerController : MonoBehaviour
         var sidewayVel = Vector3.zero;
         if (_forwardInput != 0)
         {
-            forwardVel = _playerRb.transform.forward * _forwardInput * _player.moveSpeed;
+            forwardVel = player.transform.forward * _forwardInput * moveSpeed;
         }
         if (_sidewayInput != 0)
         {
-            sidewayVel = _playerRb.transform.right * _sidewayInput * _player.moveSpeed;
+            sidewayVel = player.transform.right * _sidewayInput * moveSpeed;
         }
-        _playerRb.velocity = sidewayVel + forwardVel;
+        player.velocity = sidewayVel + forwardVel;
     }
 }
