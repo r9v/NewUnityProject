@@ -592,8 +592,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1036572794}
-  moveSpeed: 3
-  turnSpeed: 70
+  moveSpeed: 15
+  turnSpeed: 150
 --- !u!136 &1036572790
 CapsuleCollider:
   m_ObjectHideFlags: 0
