@@ -25,8 +25,9 @@ public class CameraController : MonoBehaviour
     {
         camera.transform.position = player.position;
 
-        turnAngle *= Quaternion.AngleAxis(Input.GetAxisRaw("Mouse X") * turnSpeed * Time.deltaTime, player.up);
-        camera.transform.position += player.rotation * turnAngle * distanceFromPlayer;
+        turnAngle *= Quaternion.AngleAxis(Input.GetAxisRaw("Mouse X") * turnSpeed * Time.deltaTime, camera.transform.up);
+        // * Quaternion.AngleAxis(Input.GetAxisRaw("Mouse Y") * turnSpeed * Time.deltaTime, camera.transform.right);
+        camera.transform.position += turnAngle * distanceFromPlayer;
 
         camera.transform.LookAt(player);
     }
