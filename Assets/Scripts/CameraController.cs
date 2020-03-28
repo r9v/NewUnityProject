@@ -10,8 +10,8 @@ public class CameraController : MonoBehaviour
     public float sidewayTurnSpeed = 250;
     public float upDownTurnSpeed = 100;
 
-    private float currentYAngle = 0;
-    private float currentXAngle = 0;
+    private float pitch = 0;
+    private float yaw = 0;
 
     private void LateUpdate()
     {
@@ -20,17 +20,15 @@ public class CameraController : MonoBehaviour
 
     private void MoveToPlayer()
     {
-        camera.transform.position = player.position + player.forward * distanceFromPlayer;
-        currentYAngle += Input.GetAxisRaw("Mouse X") * sidewayTurnSpeed * Time.deltaTime;
-        currentXAngle += Input.GetAxisRaw("Mouse Y") * upDownTurnSpeed * Time.deltaTime;
+        pitch -= Input.GetAxisRaw("Mouse Y") * upDownTurnSpeed * Time.deltaTime;
+        yaw += Input.GetAxisRaw("Mouse X") * sidewayTurnSpeed * Time.deltaTime;
+        camera.transform.eulerAngles = new Vector3(pitch, yaw);
 
-        camera.transform.RotateAround(player.position, Vector3.up, currentYAngle);
-        camera.transform.RotateAround(player.position, Vector3.right, currentXAngle);
+        camera.transform.position = player.position - camera.transform.forward * distanceFromPlayer;
 
-        //  turnAngle *= Quaternion.Euler(Input.GetAxisRaw("Mouse Y") * upDownTurnSpeed * Time.deltaTime,
-        //     Input.GetAxisRaw("Mouse X") * sidewayTurnSpeed * Time.deltaTime, 0);
-        // camera.transform.position = player.position + turnAngle * new Vector3(0, 0, -distanceFromPlayer);
+        //turnAngle *= Quaternion.Euler(foo, bar, 0);
+        //camera.transform.position += turnAngle * distanceFromPlayer;
 
-        camera.transform.LookAt(player);
+        //  camera.transform.LookAt(player);
     }
 }
