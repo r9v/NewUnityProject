@@ -15,20 +15,10 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        MoveToPlayer();
-    }
-
-    private void MoveToPlayer()
-    {
         pitch -= Input.GetAxisRaw("Mouse Y") * upDownTurnSpeed * Time.deltaTime;
         yaw += Input.GetAxisRaw("Mouse X") * sidewayTurnSpeed * Time.deltaTime;
+
         camera.transform.eulerAngles = new Vector3(pitch, yaw);
-
-        camera.transform.position = player.position - camera.transform.forward * distanceFromPlayer;
-
-        //turnAngle *= Quaternion.Euler(foo, bar, 0);
-        //camera.transform.position += turnAngle * distanceFromPlayer;
-
-        //  camera.transform.LookAt(player);
+        camera.transform.position = player.position - camera.transform.forward * distanceFromPlayer + camera.transform.up * 2;
     }
 }
