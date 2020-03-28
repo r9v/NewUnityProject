@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         MoveToPlayer();
-        LookAtPlayer();
     }
 
     private void MoveToPlayer()
@@ -26,9 +25,5 @@ public class CameraController : MonoBehaviour
 
         camera.transform.LookAt(player);
         //  camera.transform.rotation = player.rotation;
-    }
-
-    private void LookAtPlayer()
-    {
     }
 }
