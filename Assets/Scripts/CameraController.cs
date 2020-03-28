@@ -8,6 +8,12 @@ public class CameraController : MonoBehaviour
     public Transform player;
     public Vector3 distanceFromPlayer = new Vector3(0, 3, -8);
     public float tilt = 10;
+    public Quaternion turnAngle;
+
+    private void Start()
+    {
+        turnAngle = camera.transform.rotation;
+    }
 
     private void LateUpdate()
     {
@@ -18,13 +24,9 @@ public class CameraController : MonoBehaviour
     {
         camera.transform.position = player.position;
 
-        camera.transform.position += player.TransformDirection(distanceFromPlayer);
-        //camera.transform.position += player.rotation * distanceFromPlayer;
-        //camera.transform.position += player.forward * distanceFromPlayer.z +
-        //   player.up * distanceFromPlayer.y +
-        //   player.right * distanceFromPlayer.x;
-
+        turnAngle *= Quaternion.AngleAxis(Input.GetAxisRaw("Mouse X") * 100, player.up);
+        Debug.Log(turnAngle);
+        camera.transform.position += turnAngle * distanceFromPlayer;
         camera.transform.LookAt(player);
-        //  camera.transform.rotation = player.rotation;
     }
 }
