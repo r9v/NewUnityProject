@@ -18,11 +18,14 @@ public class CameraController : MonoBehaviour
     private void MoveToPlayer()
     {
         camera.transform.position = player.position;
-        camera.transform.position += player.forward * distanceFromPlayer.z +
-            player.up * distanceFromPlayer.y +
-            player.right * distanceFromPlayer.x;
 
-        camera.transform.rotation = player.rotation;
+        camera.transform.position += player.rotation * distanceFromPlayer;
+        //camera.transform.position += player.forward * distanceFromPlayer.z +
+        //   player.up * distanceFromPlayer.y +
+        //   player.right * distanceFromPlayer.x;
+
+        camera.transform.LookAt(player);
+        //  camera.transform.rotation = player.rotation;
     }
 
     private void LookAtPlayer()
