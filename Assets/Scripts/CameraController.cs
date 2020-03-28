@@ -7,7 +7,8 @@ public class CameraController : MonoBehaviour
     public new Camera camera;
     public Transform player;
     public Vector3 distanceFromPlayer = new Vector3(0, 3, -8);
-    public float turnSpeed = 250;
+    public float sidewayTurnSpeed = 250;
+    public float upDownTurnSpeed = 100;
 
     private Quaternion turnAngle;
 
@@ -25,8 +26,8 @@ public class CameraController : MonoBehaviour
     {
         camera.transform.position = player.position;
 
-        turnAngle *= Quaternion.AngleAxis(Input.GetAxisRaw("Mouse X") * turnSpeed * Time.deltaTime, camera.transform.up);
-        // * Quaternion.AngleAxis(Input.GetAxisRaw("Mouse Y") * turnSpeed * Time.deltaTime, camera.transform.right);
+        turnAngle *= Quaternion.Euler(Input.GetAxisRaw("Mouse Y") * upDownTurnSpeed * Time.deltaTime,
+            Input.GetAxisRaw("Mouse X") * sidewayTurnSpeed * Time.deltaTime, 0);
         camera.transform.position += turnAngle * distanceFromPlayer;
 
         camera.transform.LookAt(player);
