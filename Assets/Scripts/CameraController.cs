@@ -5,9 +5,10 @@
 public class CameraController : MonoBehaviour
 {
     public Transform player;
-    public float distanceFromPlayer = 8;
-    public float sidewayTurnSpeed = 250;
-    public float upDownTurnSpeed = 100;
+    public float scroll = 8;
+    public float yawSpeed = 250;
+    public float pitchSpeed = 100;
+    public float scrollSpeed = 30;
 
     private float pitch = 0;
     private float yaw = 0;
@@ -19,19 +20,18 @@ public class CameraController : MonoBehaviour
         var mouseInput = MouseInput();
         pitch = Mathf.Clamp(pitch - mouseInput.x, pitchMinMax.x, pitchMinMax.y);
         yaw += mouseInput.y;
-        distanceFromPlayer = Mathf.Clamp(distanceFromPlayer - mouseInput.z,
-            zoomMinMax.x, zoomMinMax.y);
+        scroll = Mathf.Clamp(scroll - mouseInput.z, zoomMinMax.x, zoomMinMax.y);
 
         transform.eulerAngles = new Vector3(pitch, yaw);
         transform.position = player.position - transform.forward *
-            distanceFromPlayer + transform.up * 2;
+            scroll + transform.up * 2;
         EventSystem.Instance.PlayerCameraRotated(transform.eulerAngles.y);
     }
 
     private Vector3 MouseInput()
     {
-        return new Vector3(Input.GetAxisRaw("Mouse Y") * upDownTurnSpeed * Time.deltaTime,
-            Input.GetAxisRaw("Mouse X") * sidewayTurnSpeed * Time.deltaTime,
-            Input.GetAxisRaw("Mouse ScrollWheel") * 20);
+        return new Vector3(Input.GetAxis("Mouse Y") * pitchSpeed,
+            Input.GetAxis("Mouse X") * yawSpeed,
+            Input.GetAxis("Mouse ScrollWheel") * scrollSpeed);
     }
 }

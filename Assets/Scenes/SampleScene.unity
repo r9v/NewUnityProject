@@ -809,11 +809,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255e9fea182a348429fc4692c50fbed6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 282840813}
   player: {fileID: 1036572793}
-  distanceFromPlayer: 8
-  sidewayTurnSpeed: 250
-  upDownTurnSpeed: 100
+  scroll: 8
+  yawSpeed: 5
+  pitchSpeed: 5
+  scrollSpeed: 30
 --- !u!20 &282840813
 Camera:
   m_ObjectHideFlags: 0
@@ -1902,8 +1902,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d667128dbbe26a34a923549d46186fd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1036572794}
-  moveSpeed: 15
+  rb: {fileID: 1036572794}
+  moveSpeed: 12
 --- !u!136 &1036572790
 CapsuleCollider:
   m_ObjectHideFlags: 0
