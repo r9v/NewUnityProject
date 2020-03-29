@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody player;
+    public Rigidbody rb;
     public float moveSpeed = 3;
 
     private void Start()
@@ -14,26 +14,19 @@ public class PlayerController : MonoBehaviour
         EventSystem.Instance.onPlayerCameraRotated += onPlayerCameraRotated;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         var input = new Vector2(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"));
-        Move(input.normalized);
-    }
-
-    private void Move(Vector2 dir)
-    {
-        var forwardVel = player.transform.forward * dir.x * moveSpeed;
-        var sidewayVel = player.transform.right * dir.y * moveSpeed;
-        player.velocity = sidewayVel + forwardVel;
+        var dir = input.normalized;
+        var forwardVel = transform.forward * dir.x * moveSpeed;
+        var sidewayVel = transform.right * dir.y * moveSpeed;
+        rb.velocity = sidewayVel + forwardVel;
     }
 
     private void onPlayerCameraRotated(float cameraYAngle)
     {
-        if (player.velocity == Vector3.zero)
-        {
-            return;
-        };
-        player.transform.rotation = Quaternion.AngleAxis(cameraYAngle, Vector3.up);
+        if (rb.velocity == Vector3.zero) return;
+        transform.rotation = Quaternion.AngleAxis(cameraYAngle, Vector3.up);
     }
 
     private void OnDestroy()
