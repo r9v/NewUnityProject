@@ -63,8 +63,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\EventSystem.cs" />
-    <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\RubiksCube.cs" />
+    <Compile Include="Assets\Scripts\RubiksCubeManipulationArea.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/www/Projects/NewUnityProject/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
