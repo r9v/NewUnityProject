@@ -23,5 +23,6 @@ public class CameraController : MonoBehaviour
 
         camera.transform.eulerAngles = new Vector3(pitch, yaw);
         camera.transform.position = player.position - camera.transform.forward * distanceFromPlayer + camera.transform.up * 2;
+        EventSystem.Instance.PlayerCameraRotated(camera.transform.eulerAngles.y);
     }
 }

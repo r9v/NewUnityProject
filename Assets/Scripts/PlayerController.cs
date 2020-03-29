@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour
     public Rigidbody player;
     public float moveSpeed = 3;
 
+    private void Start()
+    {
+        EventSystem.Instance.onPlayerCameraRotated += onPlayerCameraRotated;
+    }
+
     private void Update()
     {
         var input = new Vector2(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"));
@@ -17,14 +22,22 @@ public class PlayerController : MonoBehaviour
 
     private void Move(Vector2 dir)
     {
-        if (dir == Vector2.zero)
-        {
-            player.velocity = Vector3.zero;
-            return;
-        };
-        player.transform.rotation = Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up);
         var forwardVel = player.transform.forward * dir.x * moveSpeed;
         var sidewayVel = player.transform.right * dir.y * moveSpeed;
         player.velocity = sidewayVel + forwardVel;
+    }
+
+    private void onPlayerCameraRotated(float cameraYAngle)
+    {
+        if (player.velocity == Vector3.zero)
+        {
+            return;
+        };
+        player.transform.rotation = Quaternion.AngleAxis(cameraYAngle, Vector3.up);
+    }
+
+    private void OnDestroy()
+    {
+        EventSystem.Instance.onPlayerCameraRotated -= onPlayerCameraRotated;
     }
 }
