@@ -4,7 +4,6 @@
 [RequireComponent(typeof(Transform))]
 public class CameraController : MonoBehaviour
 {
-    public new Camera camera;
     public Transform player;
     public float distanceFromPlayer = 8;
     public float sidewayTurnSpeed = 250;
@@ -23,9 +22,10 @@ public class CameraController : MonoBehaviour
         distanceFromPlayer = Mathf.Clamp(distanceFromPlayer - mouseInput.z,
             zoomMinMax.x, zoomMinMax.y);
 
-        camera.transform.eulerAngles = new Vector3(pitch, yaw);
-        camera.transform.position = player.position - camera.transform.forward * distanceFromPlayer + camera.transform.up * 2;
-        EventSystem.Instance.PlayerCameraRotated(camera.transform.eulerAngles.y);
+        transform.eulerAngles = new Vector3(pitch, yaw);
+        transform.position = player.position - transform.forward *
+            distanceFromPlayer + transform.up * 2;
+        EventSystem.Instance.PlayerCameraRotated(transform.eulerAngles.y);
     }
 
     private Vector3 MouseInput()
