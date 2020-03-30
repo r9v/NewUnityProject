@@ -1479,6 +1479,7 @@ GameObject:
   - component: {fileID: 826287659}
   - component: {fileID: 826287658}
   - component: {fileID: 826287657}
+  - component: {fileID: 826287661}
   m_Layer: 0
   m_Name: RubiksArchon
   m_TagString: Untagged
@@ -1546,13 +1547,25 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 826287656}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.8, y: 4.2, z: 9.67}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.2, z: 6.47}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &826287661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 826287656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3865122a0a1b0f3469ad5ec121604725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cubePrefab: {fileID: 1104424554510958, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
 --- !u!1 &853346436
 GameObject:
   m_ObjectHideFlags: 0
@@ -4132,7 +4145,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4750839119014344, guid: e3bd17498766ed84ca002e614f21cc6e, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -10.39
       objectReference: {fileID: 0}
     - target: {fileID: 4750839119014344, guid: e3bd17498766ed84ca002e614f21cc6e, type: 2}
       propertyPath: m_LocalRotation.x
@@ -4154,7 +4167,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114738976504748690, guid: e3bd17498766ed84ca002e614f21cc6e, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: e3bd17498766ed84ca002e614f21cc6e, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1941053051
