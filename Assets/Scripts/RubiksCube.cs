@@ -5,10 +5,13 @@ using UnityEngine;
 public class RubiksCube : MonoBehaviour
 {
     public GameObject cubePrefab;
+    public GameObject manipulationAreaPrefab;
     private GameObject[,,] qubies = new GameObject[3, 3, 3];
 
     private void Start()
     {
+        var ma = Instantiate(manipulationAreaPrefab, transform);
+
         var cubePrefabSize = GetObjectBound(cubePrefab).size;
 
         for (var x = 0; x < 3; x++)
@@ -23,6 +26,7 @@ public class RubiksCube : MonoBehaviour
                         (z - 1) * cubePrefabSize.z) + transform.position;
                     var rot = Quaternion.identity;
                     var qb = Instantiate(cubePrefab, pos, rot, transform);
+                    qb.name = "x:" + x + " y:" + y + " z:" + z;
                     qubies[x, y, z] = qb;
                 }
             }
@@ -36,7 +40,7 @@ public class RubiksCube : MonoBehaviour
             for (int y = 0; y < qubies.GetLength(1); y++)
             {
                 if (!qubies[x, y, 0]) continue;
-                qubies[x, y, 0].transform.Rotate(new Vector3(0, Time.deltaTime * 10));
+                qubies[x, y, 0].transform.Rotate(new Vector3(0, 0, Time.deltaTime * 10));
             }
         }
     }
