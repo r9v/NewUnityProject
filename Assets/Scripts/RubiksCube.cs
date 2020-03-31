@@ -6,10 +6,26 @@ public class RubiksCube : MonoBehaviour
 {
     public GameObject cubePrefab;
     public GameObject manipulationAreaPrefab;
+
+    private readonly uint CUBE_SIZE = 3;
+    private Side[,,] state;
+
+    private void InitState()
+    {
+        state = new Side[6, CUBE_SIZE, CUBE_SIZE];
+        for (var s = 0; s < 6; s++)
+            for (var i = 0; i < CUBE_SIZE; i++)
+                for (var j = 0; j < CUBE_SIZE; j++)
+                    state[s, i, j] = (Side)s;
+    }
+
     private GameObject[,,] qubies = new GameObject[3, 3, 3];
+
+    private bool rotating;
 
     private void Start()
     {
+        InitState();
         var ma = Instantiate(manipulationAreaPrefab, transform);
 
         var cubePrefabSize = GetObjectBound(cubePrefab).size;
@@ -20,7 +36,7 @@ public class RubiksCube : MonoBehaviour
             {
                 for (var z = 0; z < 3; z++)
                 {
-                    if (x == 1 && y == 1 && z == 1) continue;
+                    // if (x == 1 && y == 1 && z == 1) continue;
                     var pos = new Vector3((x - 1) * cubePrefabSize.x,
                         (y - 1) * cubePrefabSize.y,
                         (z - 1) * cubePrefabSize.z) + transform.position;
@@ -35,12 +51,68 @@ public class RubiksCube : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown("space"))
+        {
+            Rotate(0, Axis.Z);
+        }
+    }
+
+    private void Rotate(int slice, Axis axis, bool clockwise = true)
+    {
+        if (rotating) return;
+        rotating = true;
+        switch (axis)
+        {
+            case Axis.X:
+                RotateX(slice, clockwise);
+                break;
+
+            case Axis.Y:
+                RotateY(slice, clockwise);
+                break;
+
+            case Axis.Z:
+                RotateZ(slice, clockwise);
+                break;
+        }
+        rotating = false;
+    }
+
+    private void RotateX(int slice, bool clockwise = true)
+    {
+        var dir = clockwise ? 1 : -1;
+        for (int y = 0; y < qubies.GetLength(1); y++)
+        {
+            for (int z = 0; z < qubies.GetLength(2); z++)
+            {
+                qubies[slice, y, z].transform.RotateAround(transform.position,
+                   transform.right, dir * 90);
+            }
+        }
+    }
+
+    private void RotateY(int slice, bool clockwise = true)
+    {
+        var dir = clockwise ? 1 : -1;
         for (int x = 0; x < qubies.GetLength(0); x++)
         {
-            for (int y = 0; y < qubies.GetLength(1); y++)
+            for (int z = 0; z < qubies.GetLength(2); z++)
             {
-                if (!qubies[x, y, 0]) continue;
-                qubies[x, y, 0].transform.Rotate(new Vector3(0, 0, Time.deltaTime * 10));
+                qubies[x, slice, z].transform.RotateAround(transform.position,
+                   transform.up, dir * 90);
+            }
+        }
+    }
+
+    private void RotateZ(int slice, bool clockwise = true)
+    {
+        var dir = clockwise ? 1 : -1;
+        for (int y = 0; y < qubies.GetLength(1); y++)
+        {
+            for (int x = 0; x < qubies.GetLength(0); x++)
+            {
+                qubies[x, y, slice].transform.RotateAround(transform.position,
+                  -transform.forward, dir * 90);
             }
         }
     }
@@ -61,4 +133,14 @@ public class RubiksCube : MonoBehaviour
         else
             return new Bounds();
     }
+}
+
+public enum Axis
+{
+    X, Y, Z
+}
+
+public enum Side
+{
+    U, L, F, R, B, D
 }

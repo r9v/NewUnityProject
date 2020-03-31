@@ -2972,7 +2972,7 @@ GameObject:
   - component: {fileID: 4750839119014344}
   - component: {fileID: 114738976504748690}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: '[OBSOLETE]Cube'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15759,3 +15759,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3865122a0a1b0f3469ad5ec121604725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cubePrefab: {fileID: 0}
+  manipulationAreaPrefab: {fileID: 0}
