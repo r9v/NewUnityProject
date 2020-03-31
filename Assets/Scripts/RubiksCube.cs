@@ -21,36 +21,8 @@ public class RubiksCube : MonoBehaviour
         ColorCubeMap();
     }
 
-    public class Foo
-    {
-        public string faceName { get; private set; }
-        public int x { get; private set; }
-        public int y { get; private set; }
-
-        public Foo(string faceName, int x, int y)
-        {
-            this.faceName = faceName;
-            this.x = x;
-            this.y = y;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if ((obj == null) || !GetType().Equals(obj.GetType()))
-            {
-                return false;
-            }
-
-            return faceName == (obj as Foo).faceName &&
-                 x == (obj as Foo).x &&
-                 y == (obj as Foo).y;
-        }
-    }
-
     private void ColorCubeMap()
     {
-        var dick = new Dictionary<Foo, Color>();
-
         for (var x = 0; x < CUBE_SIZE; x++)
         {
             for (var y = 0; y < CUBE_SIZE; y++)
@@ -66,30 +38,6 @@ public class RubiksCube : MonoBehaviour
                     dick.Add(new Foo("Front", x, y),
                         qb.transform.Find("Front").GetComponent<Renderer>().material.color);
                 }
-            }
-        }
-
-        for (var faceIdx = 0; faceIdx < 6; faceIdx++)
-        {
-            for (var x = 0; x < CUBE_SIZE; x++)
-            {
-                for (var y = 0; y < CUBE_SIZE; y++)
-                {
-                    Color color;
-                    dick.TryGetValue(new Foo("Front", x, y), out color);
-                    ColorCubeMapFace("Front", x, y, Color.black);
-                }
-            }
-        }
-    }
-
-    private void ColorCubeMapFace(string faceName, Color color)
-    {
-        for (var x = 0; x < CUBE_SIZE; x++)
-        {
-            for (var y = 0; y < CUBE_SIZE; y++)
-            {
-                ColorCubeMapFace(faceName, x, y, color);
             }
         }
     }
