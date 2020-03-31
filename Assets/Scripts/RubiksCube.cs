@@ -31,15 +31,25 @@ public class RubiksCube : MonoBehaviour
                 {
                     if (IsInternalQb(x, y, z)) continue;
 
-                    var qb = _qubies[x, y, z];
-                    // if (x != 0) continue;
-
-                    //check what sides the qb belongs to
-                    dick.Add(new Foo("Front", x, y),
-                        qb.transform.Find("Front").GetComponent<Renderer>().material.color);
+                    string faceName;
+                    int faceX;
+                    int faceY;
+                    Color pixelColor;
+                    GetQbFacePosition(_qubies[x, y, z], out faceName, out faceX, out faceY, out pixelColor);
+                    ColorCubeMapFace(faceName, faceX, faceY, pixelColor);
                 }
             }
         }
+    }
+
+    private System.Random random = new System.Random();
+
+    private void GetQbFacePosition(GameObject gameObject, out string faceName, out int faceX, out int faceY, out Color pixelColor)
+    {
+        faceName = "Front";
+        faceX = random.Next(0, 2);
+        faceY = random.Next(0, 2);
+        pixelColor = Color.green;
     }
 
     private void ColorCubeMapFace(string faceName, int x, int y, Color color)
