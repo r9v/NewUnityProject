@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
         QualitySettings.vSyncCount = 0;  // VSync must be disabled
         Application.targetFrameRate = 30;
 
-        EventSystem.Instance.onPlayerCameraRotated += onPlayerCameraRotated;
+        EventSystem.Instance.OnPlayerCameraRotated += OnPlayerCameraRotated;
     }
 
     private void FixedUpdate()
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = sidewayVel + forwardVel;
     }
 
-    private void onPlayerCameraRotated(float cameraYAngle)
+    private void OnPlayerCameraRotated(float cameraYAngle)
     {
         if (rb.velocity == Vector3.zero) return;
         transform.rotation = Quaternion.AngleAxis(cameraYAngle, Vector3.up);
@@ -34,6 +34,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventSystem.Instance.onPlayerCameraRotated -= onPlayerCameraRotated;
+        EventSystem.Instance.OnPlayerCameraRotated -= OnPlayerCameraRotated;
     }
 }

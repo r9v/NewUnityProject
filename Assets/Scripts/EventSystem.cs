@@ -12,27 +12,27 @@ public class EventSystem : MonoBehaviour
         Instance = this;
     }
 
-    public event Action<float> onPlayerCameraRotated;
+    public event Action<float> OnPlayerCameraRotated;
 
     public void PlayerCameraRotated(float cameraYAngle)
     {
-        if (onPlayerCameraRotated != null) // no c# 6 ;(
-            onPlayerCameraRotated.Invoke(cameraYAngle);
+        if (OnPlayerCameraRotated != null) // no c# 6 ;(
+            OnPlayerCameraRotated.Invoke(cameraYAngle);
     }
 
-    public event Action onPlayerEnteredRubiksCubeManipulationArea;
+    public event Action OnPlayerEnteredRubiksCubeManipulationArea;
 
     public void PlayerEnteredRubiksCubeManipulationArea()
     {
-        if (onPlayerEnteredRubiksCubeManipulationArea != null) // no c# 6 ;(
-            onPlayerEnteredRubiksCubeManipulationArea.Invoke();
+        if (OnPlayerEnteredRubiksCubeManipulationArea != null) // no c# 6 ;(
+            OnPlayerEnteredRubiksCubeManipulationArea.Invoke();
     }
 
-    public event Action onPlayerLeftRubiksCubeManipulationArea;
+    public event Action OnPlayerLeftRubiksCubeManipulationArea;
 
     public void PlayerLeftRubiksCubeManipulationArea()
     {
-        if (onPlayerLeftRubiksCubeManipulationArea != null) // no c# 6 ;(
-            onPlayerLeftRubiksCubeManipulationArea.Invoke();
+        if (OnPlayerLeftRubiksCubeManipulationArea != null) // no c# 6 ;(
+            OnPlayerLeftRubiksCubeManipulationArea.Invoke();
     }
 }
