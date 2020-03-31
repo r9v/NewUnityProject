@@ -16,7 +16,7 @@ public class RubiksCube : MonoBehaviour
     public GameObject cubeMap;
 
     private readonly uint CUBE_SIZE = 3;
-    private GameObject[,,] _qubies = new GameObject[3, 3, 3];
+    private GameObject[][][] _qubies;
     private CubeRotator _cubeRotator;
 
     private void Awake()
@@ -31,7 +31,7 @@ public class RubiksCube : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            _cubeRotator.Rotate(0, Axis.Z);
+            _cubeRotator.Rotate(0, Axis.X);
         }
     }
 
@@ -49,7 +49,7 @@ public class RubiksCube : MonoBehaviour
                     int faceX;
                     int faceY;
                     Color pixelColor;
-                    GetQbFacePosition(_qubies[x, y, z], out faceName, out faceX, out faceY, out pixelColor);
+                    GetQbFacePosition(_qubies[x][y][z], out faceName, out faceX, out faceY, out pixelColor);
                     ColorCubeMapFace(faceName, faceX, faceY, pixelColor);
                 }
             }
@@ -83,11 +83,14 @@ public class RubiksCube : MonoBehaviour
 
     private void CreateQubies()
     {
+        _qubies = new GameObject[CUBE_SIZE][][];
         var cubePrefabSize = GetObjectBound(cubePrefab).size;
         for (var x = 0; x < CUBE_SIZE; x++)
         {
+            _qubies[x] = new GameObject[CUBE_SIZE][];
             for (var y = 0; y < CUBE_SIZE; y++)
             {
+                _qubies[x][y] = new GameObject[CUBE_SIZE];
                 for (var z = 0; z < CUBE_SIZE; z++)
                 {
                     var offset = (CUBE_SIZE - 1f) / 2f;
@@ -97,13 +100,12 @@ public class RubiksCube : MonoBehaviour
                     var rot = Quaternion.identity;
                     var qb = Instantiate(cubePrefab, pos, rot, transform);
                     qb.name = x + "," + y + "," + z;
-                    _qubies[x, y, z] = qb;
+                    _qubies[x][y][z] = qb;
                 }
             }
         }
     }
 
-    //get rid of this
     private Bounds GetObjectBound(GameObject go)
     {
         MeshRenderer[] mfs = go.GetComponentsInChildren<MeshRenderer>();
@@ -126,14 +128,14 @@ public class CubeRotator
 {
     private bool _rotating;
 
-    private GameObject[,,] _qubies;
+    private GameObject[][][] _qubies;
 
     private Vector3 _pivot;
     private Vector3 _right;
     private Vector3 _up;
     private Vector3 _forward;
 
-    public CubeRotator(GameObject[,,] qubies, Vector3 pivot, Vector3 right, Vector3 up, Vector3 forward)
+    public CubeRotator(GameObject[][][] qubies, Vector3 pivot, Vector3 right, Vector3 up, Vector3 forward)
     {
         _qubies = qubies;
         _pivot = pivot;
@@ -168,7 +170,7 @@ public class CubeRotator
         var dir = clockwise ? 1 : -1;
         for (int y = 0; y < _qubies.GetLength(1); y++)
             for (int z = 0; z < _qubies.GetLength(2); z++)
-                _qubies[slice, y, z].transform.RotateAround(_pivot, _right, dir * 90);
+                _qubies[slice][y][z].transform.RotateAround(_pivot, _right, dir * 90);
     }
 
     private void RotateY(int slice, bool clockwise = true)
@@ -176,7 +178,7 @@ public class CubeRotator
         var dir = clockwise ? 1 : -1;
         for (int x = 0; x < _qubies.GetLength(0); x++)
             for (int z = 0; z < _qubies.GetLength(2); z++)
-                _qubies[x, slice, z].transform.RotateAround(_pivot, _up, dir * 90);
+                _qubies[x][slice][z].transform.RotateAround(_pivot, _up, dir * 90);
     }
 
     private void RotateZ(int slice, bool clockwise = true)
@@ -184,6 +186,22 @@ public class CubeRotator
         var dir = clockwise ? 1 : -1;
         for (int y = 0; y < _qubies.GetLength(1); y++)
             for (int x = 0; x < _qubies.GetLength(0); x++)
-                _qubies[x, y, slice].transform.RotateAround(_pivot, -_forward, dir * 90);
+                _qubies[x][y][slice].transform.RotateAround(_pivot, _forward, dir * 90);
+    }
+
+    private void InplaceRotate(GameObject[,] mat)
+    {
+        var n = mat.GetLength(0);
+        for (var x = 0; x < n / 2; x++)
+        {
+            for (var y = x; y < n - x - 1; y++)
+            {
+                var temp = mat[x, y];
+                mat[x, y] = mat[y, n - 1 - x];
+                mat[y, n - 1 - x] = mat[n - 1 - x, n - 1 - y];
+                mat[n - 1 - x, n - 1 - y] = mat[n - 1 - y, x];
+                mat[n - 1 - y, x] = temp;
+            }
+        }
     }
 }
