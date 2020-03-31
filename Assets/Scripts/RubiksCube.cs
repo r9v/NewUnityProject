@@ -12,59 +12,67 @@ public class RubiksCube : MonoBehaviour
 
     private bool _rotating;
     private readonly uint CUBE_SIZE = 3;
-    private List<Face> _faces = new List<Face>(6);
     private GameObject[,,] _qubies = new GameObject[3, 3, 3];
 
     private void Start()
     {
-        InitState();
         Instantiate(manipulationAreaPrefab, transform);
-
-        var cubePrefabSize = GetObjectBound(cubePrefab).size;
-
-        for (var x = 0; x < 3; x++)
-        {
-            for (var y = 0; y < 3; y++)
-            {
-                for (var z = 0; z < 3; z++)
-                {
-                    // if (x == 1 && y == 1 && z == 1) continue;
-                    var pos = new Vector3((x - 1) * cubePrefabSize.x,
-                        (y - 1) * cubePrefabSize.y,
-                        (z - 1) * cubePrefabSize.z) + transform.position;
-                    var rot = Quaternion.identity;
-                    var qb = Instantiate(cubePrefab, pos, rot, transform);
-                    qb.name = "x:" + x + " y:" + y + " z:" + z;
-                    _qubies[x, y, z] = qb;
-                }
-            }
-        }
-    }
-
-    private void InitState()
-    {
-        _faces[0] = new Face(CUBE_SIZE, Pixel.T());
-        _faces[1] = new Face(CUBE_SIZE, Pixel.L());
-        _faces[2] = new Face(CUBE_SIZE, Pixel.F());
-        _faces[3] = new Face(CUBE_SIZE, Pixel.R());
-        _faces[4] = new Face(CUBE_SIZE, Pixel.B());
-        _faces[5] = new Face(CUBE_SIZE, Pixel.D());
-
+        MakeCube();
         ColorCubeMap();
     }
 
     private void ColorCubeMap()
     {
-        _faces.ForEach((face) =>
+        var first0 = _qubies[0, 0, 0];
+        var first1 = _qubies[0, 1, 0];
+        var first2 = _qubies[0, 2, 0];
+        var first3 = _qubies[1, 0, 0];
+        var first4 = _qubies[1, 1, 0];
+        var first5 = _qubies[1, 2, 0];
+        var first6 = _qubies[2, 0, 0];
+        var first7 = _qubies[2, 1, 0];
+        var first8 = _qubies[2, 2, 0];
+
+        for (var x = 0; x < CUBE_SIZE; x++)
         {
-            var panel = cubeMap.transform.GetChild(s);
-            var panelChildIdx = 0;
-            for (var i = 0; i < CUBE_SIZE; i++)
-                for (var j = 0; j < CUBE_SIZE; j++)
+            for (var y = 0; y < CUBE_SIZE; y++)
+            {
+                for (var z = 0; z < CUBE_SIZE; z++)
                 {
-                    panel.GetChild(panelChildIdx++).GetComponent<Image>().color = state[s, i, j].color;
+                    if (IsInternalQb(x, y, z)) continue;
+
+                    var qb = _qubies[x, y, z];
+                    if (x != 0) continue;
+                    ColorCubeMapFace("Left",
+                        qb.transform.Find("Front").GetComponent<Renderer>().material.color);
+
+                    //check what sides the qb belongs to
+
+                    //assign color to the correct panel in cube map
                 }
-        });
+            }
+        }
+    }
+
+    private void ColorCubeMapFace(string faceName, Color color)
+    {
+        var idx = 0;
+        for (var x = 0; x < CUBE_SIZE; x++)
+        {
+            for (var y = 0; y < CUBE_SIZE; y++)
+            {
+                var cubeMapFace = cubeMap.transform.Find(faceName);
+                cubeMapFace.GetChild(idx++).GetComponent<Image>().color = color;
+            }
+        }
+    }
+
+    private bool IsInternalQb(int x, int y, int z)
+    {
+        if (x == 0 || x == CUBE_SIZE - 1) return false;
+        if (y == 0 || y == CUBE_SIZE - 1) return false;
+        if (z == 0 || z == CUBE_SIZE - 1) return false;
+        return true;
     }
 
     private void Update()
@@ -72,6 +80,29 @@ public class RubiksCube : MonoBehaviour
         if (Input.GetKeyDown("space"))
         {
             Rotate(0, Axis.Z);
+        }
+    }
+
+    private void MakeCube()
+    {
+        var cubePrefabSize = GetObjectBound(cubePrefab).size;
+        for (var x = 0; x < CUBE_SIZE; x++)
+        {
+            for (var y = 0; y < CUBE_SIZE; y++)
+            {
+                for (var z = 0; z < CUBE_SIZE; z++)
+                {
+                    //todo: use CUBE_SIZE here
+                    var offset = (CUBE_SIZE - 1f) / 2f;
+                    var pos = new Vector3((x - offset) * cubePrefabSize.x,
+                        (y - offset) * cubePrefabSize.y,
+                        (z - offset) * cubePrefabSize.z) + transform.position;
+                    var rot = Quaternion.identity;
+                    var qb = Instantiate(cubePrefab, pos, rot, transform);
+                    qb.name = x + "," + y + "," + z;
+                    _qubies[x, y, z] = qb;
+                }
+            }
         }
     }
 
@@ -157,70 +188,4 @@ public class RubiksCube : MonoBehaviour
 public enum Axis
 {
     X, Y, Z
-}
-
-public class Face
-{
-    public List<Pixel> pixels;
-    private uint _size;
-
-    public Face(uint size, Pixel startingPixel)
-    {
-        pixels = new List<Pixel>((int)size);
-
-        for (var i = 0; i < size; i++)
-        {
-            pixels.Add(startingPixel.Clone());
-        }
-
-        _size = size;
-    }
-}
-
-public class Pixel
-{
-    private string _code;
-
-    public readonly Color color;
-
-    private Pixel(string code, Color color)
-    {
-        _code = code;
-        this.color = color;
-    }
-
-    public static Pixel T()
-    {
-        return new Pixel("T", Color.red);
-    }
-
-    public static Pixel R()
-    {
-        return new Pixel("R", new Color32(255, 164, 15, 255));
-    }
-
-    public static Pixel F()
-    {
-        return new Pixel("F", Color.blue);
-    }
-
-    public static Pixel L()
-    {
-        return new Pixel("L", Color.white);
-    }
-
-    public static Pixel B()
-    {
-        return new Pixel("B", Color.green);
-    }
-
-    public static Pixel D()
-    {
-        return new Pixel("D", Color.yellow);
-    }
-
-    public Pixel Clone()
-    {
-        return new Pixel(_code, new Color(color.r, color.g, color.b, color.a));
-    }
 }

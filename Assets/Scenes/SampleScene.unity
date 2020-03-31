@@ -3157,7 +3157,7 @@ GameObject:
   - component: {fileID: 826287657}
   - component: {fileID: 826287661}
   m_Layer: 0
-  m_Name: RubiksCube
+  m_Name: Rubik's Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3241,7 +3241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3865122a0a1b0f3469ad5ec121604725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubePrefab: {fileID: 1104424554510958, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
+  cubePrefab: {fileID: 1756787008456696, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
   manipulationAreaPrefab: {fileID: 1548850572003450, guid: fc2e4ce009161d148b2a89e21d776fbc,
     type: 2}
   cubeMap: {fileID: 1475495582}
@@ -6451,48 +6451,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1537314886}
---- !u!1001 &1544083510
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4635687604543858, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-      propertyPath: m_RootOrder
-      value: 9
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 559baf9e05d40804daf8ce132f6a401b, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1552971154
 GameObject:
   m_ObjectHideFlags: 0
@@ -7105,7 +7063,7 @@ GameObject:
   - component: {fileID: 1624960716}
   - component: {fileID: 1624960715}
   m_Layer: 5
-  m_Name: Top
+  m_Name: Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
