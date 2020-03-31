@@ -189,18 +189,18 @@ public class CubeRotator
                 _qubies[x][y][slice].transform.RotateAround(_pivot, _forward, dir * 90);
     }
 
-    private void InplaceRotate(GameObject[,] mat)
+    private void InplaceRotate(GameObject[][] mat)
     {
-        var n = mat.GetLength(0);
+        var n = mat.Length;
         for (var x = 0; x < n / 2; x++)
         {
             for (var y = x; y < n - x - 1; y++)
             {
-                var temp = mat[x, y];
-                mat[x, y] = mat[y, n - 1 - x];
-                mat[y, n - 1 - x] = mat[n - 1 - x, n - 1 - y];
-                mat[n - 1 - x, n - 1 - y] = mat[n - 1 - y, x];
-                mat[n - 1 - y, x] = temp;
+                var temp = mat[x][y];
+                mat[x][y] = mat[y][n - 1 - x];
+                mat[y][n - 1 - x] = mat[n - 1 - x][n - 1 - y];
+                mat[n - 1 - x][n - 1 - y] = mat[n - 1 - y][x];
+                mat[n - 1 - y][x] = temp;
             }
         }
     }
