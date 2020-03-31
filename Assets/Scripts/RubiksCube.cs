@@ -21,17 +21,35 @@ public class RubiksCube : MonoBehaviour
         ColorCubeMap();
     }
 
+    public class Foo
+    {
+        public string faceName { get; private set; }
+        public int x { get; private set; }
+        public int y { get; private set; }
+
+        public Foo(string faceName, int x, int y)
+        {
+            this.faceName = faceName;
+            this.x = x;
+            this.y = y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+
+            return faceName == (obj as Foo).faceName &&
+                 x == (obj as Foo).x &&
+                 y == (obj as Foo).y;
+        }
+    }
+
     private void ColorCubeMap()
     {
-        var first0 = _qubies[0, 0, 0];
-        var first1 = _qubies[0, 1, 0];
-        var first2 = _qubies[0, 2, 0];
-        var first3 = _qubies[1, 0, 0];
-        var first4 = _qubies[1, 1, 0];
-        var first5 = _qubies[1, 2, 0];
-        var first6 = _qubies[2, 0, 0];
-        var first7 = _qubies[2, 1, 0];
-        var first8 = _qubies[2, 2, 0];
+        var dick = new Dictionary<Foo, Color>();
 
         for (var x = 0; x < CUBE_SIZE; x++)
         {
@@ -42,13 +60,24 @@ public class RubiksCube : MonoBehaviour
                     if (IsInternalQb(x, y, z)) continue;
 
                     var qb = _qubies[x, y, z];
-                    if (x != 0) continue;
-                    ColorCubeMapFace("Left",
-                        qb.transform.Find("Front").GetComponent<Renderer>().material.color);
+                    // if (x != 0) continue;
 
                     //check what sides the qb belongs to
+                    dick.Add(new Foo("Front", x, y),
+                        qb.transform.Find("Front").GetComponent<Renderer>().material.color);
+                }
+            }
+        }
 
-                    //assign color to the correct panel in cube map
+        for (var faceIdx = 0; faceIdx < 6; faceIdx++)
+        {
+            for (var x = 0; x < CUBE_SIZE; x++)
+            {
+                for (var y = 0; y < CUBE_SIZE; y++)
+                {
+                    Color color;
+                    dick.TryGetValue(new Foo("Front", x, y), out color);
+                    ColorCubeMapFace("Front", x, y, Color.black);
                 }
             }
         }
@@ -56,15 +85,20 @@ public class RubiksCube : MonoBehaviour
 
     private void ColorCubeMapFace(string faceName, Color color)
     {
-        var idx = 0;
         for (var x = 0; x < CUBE_SIZE; x++)
         {
             for (var y = 0; y < CUBE_SIZE; y++)
             {
-                var cubeMapFace = cubeMap.transform.Find(faceName);
-                cubeMapFace.GetChild(idx++).GetComponent<Image>().color = color;
+                ColorCubeMapFace(faceName, x, y, color);
             }
         }
+    }
+
+    private void ColorCubeMapFace(string faceName, int x, int y, Color color)
+    {
+        var cubeMapFace = cubeMap.transform.Find(faceName);
+        cubeMapFace.GetChild((int)(x * CUBE_SIZE) + y)
+            .GetComponent<Image>().color = color;
     }
 
     private bool IsInternalQb(int x, int y, int z)
