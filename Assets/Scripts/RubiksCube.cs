@@ -59,7 +59,7 @@ public class RubiksCube : MonoBehaviour
                 {
                     if (CubeUtils.IsInternalQb(x, y, z, CUBE_SIZE)) continue;
 
-                    var foo = GetQbFacePosition(_qubies[x][y][z]);
+                    var foo = GetQbFacePosition(_qubies[x][y][z], x, y, z);
                     foo.ForEach((f) =>
                     {
                         ColorCubeMapFace(f.faceName, f.faceX, f.faceY, f.pixelColor);
@@ -69,16 +69,21 @@ public class RubiksCube : MonoBehaviour
         }
     }
 
-    private System.Random random = new System.Random();
-
-    private List<Foo> GetQbFacePosition(GameObject gameObject)
+    private List<Foo> GetQbFacePosition(GameObject qb, int x, int y, int z)
     {
-        var faceName = "Front";
-        var faceX = random.Next(0, 2);
-        var faceY = random.Next(0, 2);
-        var pixelColor = Color.green;
         var ret = new List<Foo>();
-        ret.Add(new Foo(faceName, faceX, faceY, pixelColor));
+        if (x == 0)
+            ret.Add(new Foo("Left", y, z, Color.green));
+        if (x == CUBE_SIZE - 1)
+            ret.Add(new Foo("Right", y, z, Color.white));
+        if (y == 0)
+            ret.Add(new Foo("Down", x, z, Color.black));
+        if (y == CUBE_SIZE - 1)
+            ret.Add(new Foo("Up", x, z, Color.blue));
+        if (z == 0)
+            ret.Add(new Foo("Back", x, y, Color.red));
+        if (z == CUBE_SIZE - 1)
+            ret.Add(new Foo("Front", x, y, Color.yellow));
         return ret;
     }
 
