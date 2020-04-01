@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public enum Axis
@@ -32,6 +33,22 @@ public class RubiksCube : MonoBehaviour
         }
     }
 
+    private class Foo
+    {
+        public string faceName;
+        public int faceX;
+        public int faceY;
+        public Color pixelColor;
+
+        public Foo(string faceName, int faceX, int faceY, Color pixelColor)
+        {
+            this.faceName = faceName;
+            this.faceX = faceX;
+            this.faceY = faceY;
+            this.pixelColor = pixelColor;
+        }
+    }
+
     private void ColorCubeMap()
     {
         for (var x = 0; x < CUBE_SIZE; x++)
@@ -42,12 +59,11 @@ public class RubiksCube : MonoBehaviour
                 {
                     if (CubeUtils.IsInternalQb(x, y, z, CUBE_SIZE)) continue;
 
-                    string faceName;
-                    int faceX;
-                    int faceY;
-                    Color pixelColor;
-                    GetQbFacePosition(_qubies[x][y][z], out faceName, out faceX, out faceY, out pixelColor);
-                    ColorCubeMapFace(faceName, faceX, faceY, pixelColor);
+                    var foo = GetQbFacePosition(_qubies[x][y][z]);
+                    foo.ForEach((f) =>
+                    {
+                        ColorCubeMapFace(f.faceName, f.faceX, f.faceY, f.pixelColor);
+                    });
                 }
             }
         }
@@ -55,12 +71,15 @@ public class RubiksCube : MonoBehaviour
 
     private System.Random random = new System.Random();
 
-    private void GetQbFacePosition(GameObject gameObject, out string faceName, out int faceX, out int faceY, out Color pixelColor)
+    private List<Foo> GetQbFacePosition(GameObject gameObject)
     {
-        faceName = "Front";
-        faceX = random.Next(0, 2);
-        faceY = random.Next(0, 2);
-        pixelColor = Color.green;
+        var faceName = "Front";
+        var faceX = random.Next(0, 2);
+        var faceY = random.Next(0, 2);
+        var pixelColor = Color.green;
+        var ret = new List<Foo>();
+        ret.Add(new Foo(faceName, faceX, faceY, pixelColor));
+        return ret;
     }
 
     private void ColorCubeMapFace(string faceName, int x, int y, Color color)
