@@ -31,7 +31,7 @@ public class RubiksCube : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            _cubeRotator.Rotate(0, Axis.X);
+            _cubeRotator.Rotate(0, Axis.Z);
         }
     }
 
@@ -43,7 +43,7 @@ public class RubiksCube : MonoBehaviour
             {
                 for (var z = 0; z < CUBE_SIZE; z++)
                 {
-                    if (IsInternalQb(x, y, z)) continue;
+                    if (CubeUtils.IsInternalQb(x, y, z, CUBE_SIZE)) continue;
 
                     string faceName;
                     int faceX;
@@ -71,14 +71,6 @@ public class RubiksCube : MonoBehaviour
         var face = cubeMap.transform.Find(faceName);
         var pixel = face.GetChild((int)(x * CUBE_SIZE) + y);
         pixel.GetComponent<Image>().color = color;
-    }
-
-    private bool IsInternalQb(int x, int y, int z)
-    {
-        if (x == 0 || x == CUBE_SIZE - 1) return false;
-        if (y == 0 || y == CUBE_SIZE - 1) return false;
-        if (z == 0 || z == CUBE_SIZE - 1) return false;
-        return true;
     }
 
     private void CreateQubies()
@@ -121,6 +113,17 @@ public class RubiksCube : MonoBehaviour
         }
         else
             return new Bounds();
+    }
+}
+
+public static class CubeUtils
+{
+    public static bool IsInternalQb(int x, int y, int z, uint cubeSize)
+    {
+        if (x == 0 || x == cubeSize - 1) return false;
+        if (y == 0 || y == cubeSize - 1) return false;
+        if (z == 0 || z == cubeSize - 1) return false;
+        return true;
     }
 }
 
@@ -187,15 +190,27 @@ public class CubeRotator
         for (int y = 0; y < _qubies.GetLength(1); y++)
             for (int x = 0; x < _qubies.GetLength(0); x++)
                 _qubies[x][y][slice].transform.RotateAround(_pivot, _forward, dir * 90);
+
+        var rotated = new GameObject[_qubies.Length][];
+        for (int x = 0; x < _qubies.GetLength(0); x++)
+        {
+            rotated[x] = new GameObject[_qubies.Length];
+            for (int y = 0; y < _qubies.GetLength(1); y++)
+            {
+                rotated[x][y] = _qubies[x][y][slice];
+            }
+        }
+        InplaceRotate(rotated, slice);
     }
 
-    private void InplaceRotate(GameObject[][] mat)
+    private void InplaceRotate(GameObject[][] mat, int slice)
     {
         var n = mat.Length;
         for (var x = 0; x < n / 2; x++)
         {
             for (var y = x; y < n - x - 1; y++)
             {
+                if (CubeUtils.IsInternalQb(x, y, slice, (uint)n)) continue;
                 var temp = mat[x][y];
                 mat[x][y] = mat[y][n - 1 - x];
                 mat[y][n - 1 - x] = mat[n - 1 - x][n - 1 - y];
