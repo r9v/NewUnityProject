@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public enum Axis
@@ -171,36 +168,38 @@ public class CubeRotator
     private void RotateX(int slice, bool clockwise = true)
     {
         var dir = clockwise ? 1 : -1;
-        for (int y = 0; y < _qubies.GetLength(1); y++)
-            for (int z = 0; z < _qubies.GetLength(2); z++)
+        for (int y = 0; y < _qubies.Length; y++)
+            for (int z = 0; z < _qubies.Length; z++)
                 _qubies[slice][y][z].transform.RotateAround(_pivot, _right, dir * 90);
     }
 
     private void RotateY(int slice, bool clockwise = true)
     {
         var dir = clockwise ? 1 : -1;
-        for (int x = 0; x < _qubies.GetLength(0); x++)
-            for (int z = 0; z < _qubies.GetLength(2); z++)
+        for (int x = 0; x < _qubies.Length; x++)
+            for (int z = 0; z < _qubies.Length; z++)
                 _qubies[x][slice][z].transform.RotateAround(_pivot, _up, dir * 90);
     }
 
     private void RotateZ(int slice, bool clockwise = true)
     {
         var dir = clockwise ? 1 : -1;
-        for (int y = 0; y < _qubies.GetLength(1); y++)
-            for (int x = 0; x < _qubies.GetLength(0); x++)
+        for (int y = 0; y < _qubies.Length; y++)
+            for (int x = 0; x < _qubies.Length; x++)
                 _qubies[x][y][slice].transform.RotateAround(_pivot, _forward, dir * 90);
 
+        /*
         var rotated = new GameObject[_qubies.Length][];
-        for (int x = 0; x < _qubies.GetLength(0); x++)
+        for (int x = 0; x < _qubies.Length; x++)
         {
             rotated[x] = new GameObject[_qubies.Length];
-            for (int y = 0; y < _qubies.GetLength(1); y++)
+            for (int y = 0; y < _qubies.Length; y++)
             {
                 rotated[x][y] = _qubies[x][y][slice];
             }
         }
         InplaceRotate(rotated, slice);
+        */
     }
 
     private void InplaceRotate(GameObject[][] mat, int slice)
