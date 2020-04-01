@@ -171,6 +171,17 @@ public class CubeRotator
         for (int y = 0; y < _qubies.Length; y++)
             for (int z = 0; z < _qubies.Length; z++)
                 _qubies[slice][y][z].transform.RotateAround(_pivot, _right, dir * 90);
+
+        var toRotate = new GameObject[_qubies.Length][];
+        for (int i = 0; i < _qubies.Length; i++)
+        {
+            toRotate[i] = new GameObject[_qubies.Length];
+            for (int j = 0; j < _qubies.Length; j++)
+            {
+                toRotate[i][j] = _qubies[slice][i][j];
+            }
+        }
+        InplaceRotate(toRotate, slice);
     }
 
     private void RotateY(int slice, bool clockwise = true)
@@ -179,6 +190,17 @@ public class CubeRotator
         for (int x = 0; x < _qubies.Length; x++)
             for (int z = 0; z < _qubies.Length; z++)
                 _qubies[x][slice][z].transform.RotateAround(_pivot, _up, dir * 90);
+
+        var toRotate = new GameObject[_qubies.Length][];
+        for (int i = 0; i < _qubies.Length; i++)
+        {
+            toRotate[i] = new GameObject[_qubies.Length];
+            for (int j = 0; j < _qubies.Length; j++)
+            {
+                toRotate[i][j] = _qubies[i][slice][j];
+            }
+        }
+        InplaceRotate(toRotate, slice);
     }
 
     private void RotateZ(int slice, bool clockwise = true)
@@ -188,18 +210,16 @@ public class CubeRotator
             for (int x = 0; x < _qubies.Length; x++)
                 _qubies[x][y][slice].transform.RotateAround(_pivot, _forward, dir * 90);
 
-        /*
-        var rotated = new GameObject[_qubies.Length][];
-        for (int x = 0; x < _qubies.Length; x++)
+        var toRotate = new GameObject[_qubies.Length][];
+        for (int i = 0; i < _qubies.Length; i++)
         {
-            rotated[x] = new GameObject[_qubies.Length];
-            for (int y = 0; y < _qubies.Length; y++)
+            toRotate[i] = new GameObject[_qubies.Length];
+            for (int j = 0; j < _qubies.Length; j++)
             {
-                rotated[x][y] = _qubies[x][y][slice];
+                toRotate[i][j] = _qubies[i][j][slice];
             }
         }
-        InplaceRotate(rotated, slice);
-        */
+        InplaceRotate(toRotate, slice);
     }
 
     private void InplaceRotate(GameObject[][] mat, int slice)
