@@ -51,6 +51,7 @@ public class RubiksCube : MonoBehaviour
 
     private void ColorCubeMap()
     {
+        var a = 0;
         for (var x = 0; x < CUBE_SIZE; x++)
         {
             for (var y = 0; y < CUBE_SIZE; y++)
@@ -60,6 +61,7 @@ public class RubiksCube : MonoBehaviour
                     if (CubeUtils.IsInternalQb(x, y, z, CUBE_SIZE)) continue;
 
                     var foo = GetQbFacePosition(_qubies[x][y][z], x, y, z);
+                    a += foo.Count;
                     foo.ForEach((f) =>
                     {
                         ColorCubeMapFace(f.faceName, f.faceX, f.faceY, f.pixelColor);
@@ -67,6 +69,7 @@ public class RubiksCube : MonoBehaviour
                 }
             }
         }
+        print(a);
     }
 
     private List<Foo> GetQbFacePosition(GameObject qb, int x, int y, int z)
