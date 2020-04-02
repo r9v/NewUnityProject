@@ -122,7 +122,7 @@ public class RubiksCube : MonoBehaviour
 
     private Color GetSideColor(string side, Cubie qb)
     {
-        throw new NotImplementedException();
+        return Color.green;
     }
 
     private void ColorCubeMapFace(string faceName, int x, int y, Color color)
@@ -206,33 +206,32 @@ public class CubeRotator
         _forward = forward;
     }
 
-    public void Rotate(int slice, Axis axis, bool clockwise = true)
+    public void Rotate(int slice, Axis axis, int dir = 1)
     {
         if (_rotating) return;
         _rotating = true;
         switch (axis)
         {
             case Axis.X:
-                RotateX(slice, clockwise);
+                RotateX(slice, dir);
                 break;
 
             case Axis.Y:
-                RotateY(slice, clockwise);
+                RotateY(slice, dir);
                 break;
 
             case Axis.Z:
-                RotateZ(slice, clockwise);
+                RotateZ(slice, dir);
                 break;
         }
         _rotating = false;
     }
 
-    private void RotateX(int slice, bool clockwise = true)
+    private void RotateX(int slice, int dir)
     {
-        var dir = clockwise ? 1 : -1;
         for (int y = 0; y < _qubies.Length; y++)
             for (int z = 0; z < _qubies.Length; z++)
-                _qubies[slice][y][z].RotateAround(Axis.X, _right, _pivot, dir * 90);
+                _qubies[slice][y][z].RotateAround(Axis.X, _right, _pivot, dir);
 
         var toRotate = new Cubie[_qubies.Length][];
         for (int i = 0; i < _qubies.Length; i++)
@@ -246,12 +245,11 @@ public class CubeRotator
         InplaceRotate(toRotate, slice);
     }
 
-    private void RotateY(int slice, bool clockwise = true)
+    private void RotateY(int slice, int dir)
     {
-        var dir = clockwise ? 1 : -1;
         for (int x = 0; x < _qubies.Length; x++)
             for (int z = 0; z < _qubies.Length; z++)
-                _qubies[x][slice][z].RotateAround(Axis.Y, _up, _pivot, dir * 90);
+                _qubies[x][slice][z].RotateAround(Axis.Y, _up, _pivot, dir);
 
         var toRotate = new Cubie[_qubies.Length][];
         for (int i = 0; i < _qubies.Length; i++)
@@ -265,12 +263,11 @@ public class CubeRotator
         InplaceRotate(toRotate, slice);
     }
 
-    private void RotateZ(int slice, bool clockwise = true)
+    private void RotateZ(int slice, int dir)
     {
-        var dir = clockwise ? 1 : -1;
         for (int y = 0; y < _qubies.Length; y++)
             for (int x = 0; x < _qubies.Length; x++)
-                _qubies[x][y][slice].RotateAround(Axis.Z, _forward, _pivot, dir * 90);
+                _qubies[x][y][slice].RotateAround(Axis.Z, _forward, _pivot, dir);
 
         var toRotate = new Cubie[_qubies.Length][];
         for (int i = 0; i < _qubies.Length; i++)
