@@ -1,10 +1,56 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public enum Axis
 {
     X, Y, Z
+}
+
+public struct FaceData
+{
+    public readonly string faceName;
+    public readonly int faceX;
+    public readonly int faceY;
+    public readonly Color pixelColor;
+
+    public FaceData(string faceName, int faceX, int faceY, Color pixelColor)
+    {
+        this.faceName = faceName;
+        this.faceX = faceX;
+        this.faceY = faceY;
+        this.pixelColor = pixelColor;
+    }
+}
+
+public struct Rotation
+{
+    public readonly Axis axis;
+    public readonly int dir;
+
+    public Rotation(Axis axis, int dir)
+    {
+        this.axis = axis;
+        this.dir = dir;
+    }
+}
+
+public class Cubie
+{
+    public readonly GameObject go;
+    public readonly List<Rotation> rotations = new List<Rotation>();
+
+    public Cubie(GameObject go)
+    {
+        this.go = go;
+    }
+
+    public void RotateAround(Axis axis, Vector3 axis2, Vector3 pivot, int dir)
+    {
+        go.transform.RotateAround(pivot, axis2, dir * 90);
+        rotations.Add(new Rotation(axis, dir));
+    }
 }
 
 public class RubiksCube : MonoBehaviour
@@ -14,7 +60,7 @@ public class RubiksCube : MonoBehaviour
     public GameObject cubeMap;
 
     private readonly uint CUBE_SIZE = 3;
-    private GameObject[][][] _qubies;
+    private Cubie[][][] _qubies;
     private CubeRotator _cubeRotator;
 
     private void Awake()
@@ -33,22 +79,6 @@ public class RubiksCube : MonoBehaviour
         }
     }
 
-    private class Foo
-    {
-        public string faceName;
-        public int faceX;
-        public int faceY;
-        public Color pixelColor;
-
-        public Foo(string faceName, int faceX, int faceY, Color pixelColor)
-        {
-            this.faceName = faceName;
-            this.faceX = faceX;
-            this.faceY = faceY;
-            this.pixelColor = pixelColor;
-        }
-    }
-
     private void ColorCubeMap()
     {
         var a = 0;
@@ -60,9 +90,9 @@ public class RubiksCube : MonoBehaviour
                 {
                     if (CubeUtils.IsInternalQb(x, y, z, CUBE_SIZE)) continue;
 
-                    var foo = GetQbFacePosition(_qubies[x][y][z], x, y, z);
-                    a += foo.Count;
-                    foo.ForEach((f) =>
+                    var faceData = GetFaceData(_qubies[x][y][z], x, y, z);
+                    a += faceData.Count;
+                    faceData.ForEach((f) =>
                     {
                         ColorCubeMapFace(f.faceName, f.faceX, f.faceY, f.pixelColor);
                     });
@@ -72,22 +102,27 @@ public class RubiksCube : MonoBehaviour
         print(a);
     }
 
-    private List<Foo> GetQbFacePosition(GameObject qb, int x, int y, int z)
+    private List<FaceData> GetFaceData(Cubie qb, int x, int y, int z)
     {
-        var ret = new List<Foo>();
+        var ret = new List<FaceData>();
         if (x == 0)
-            ret.Add(new Foo("Left", y, z, Color.green));
+            ret.Add(new FaceData("Left", y, z, GetSideColor("Left", qb)));
         if (x == CUBE_SIZE - 1)
-            ret.Add(new Foo("Right", y, z, Color.white));
+            ret.Add(new FaceData("Right", y, z, Color.white));
         if (y == 0)
-            ret.Add(new Foo("Down", x, z, Color.black));
+            ret.Add(new FaceData("Down", x, z, Color.black));
         if (y == CUBE_SIZE - 1)
-            ret.Add(new Foo("Up", x, z, Color.blue));
+            ret.Add(new FaceData("Up", x, z, Color.blue));
         if (z == 0)
-            ret.Add(new Foo("Back", x, y, Color.red));
+            ret.Add(new FaceData("Back", x, y, Color.red));
         if (z == CUBE_SIZE - 1)
-            ret.Add(new Foo("Front", x, y, Color.yellow));
+            ret.Add(new FaceData("Front", x, y, Color.yellow));
         return ret;
+    }
+
+    private Color GetSideColor(string side, Cubie qb)
+    {
+        throw new NotImplementedException();
     }
 
     private void ColorCubeMapFace(string faceName, int x, int y, Color color)
@@ -99,14 +134,14 @@ public class RubiksCube : MonoBehaviour
 
     private void CreateQubies()
     {
-        _qubies = new GameObject[CUBE_SIZE][][];
+        _qubies = new Cubie[CUBE_SIZE][][];
         var cubePrefabSize = GetObjectBound(cubePrefab).size;
         for (var x = 0; x < CUBE_SIZE; x++)
         {
-            _qubies[x] = new GameObject[CUBE_SIZE][];
+            _qubies[x] = new Cubie[CUBE_SIZE][];
             for (var y = 0; y < CUBE_SIZE; y++)
             {
-                _qubies[x][y] = new GameObject[CUBE_SIZE];
+                _qubies[x][y] = new Cubie[CUBE_SIZE];
                 for (var z = 0; z < CUBE_SIZE; z++)
                 {
                     var offset = (CUBE_SIZE - 1f) / 2f;
@@ -114,9 +149,9 @@ public class RubiksCube : MonoBehaviour
                         (y - offset) * cubePrefabSize.y,
                         (z - offset) * cubePrefabSize.z) + transform.position;
                     var rot = Quaternion.identity;
-                    var qb = Instantiate(cubePrefab, pos, rot, transform);
-                    qb.name = x + "," + y + "," + z;
-                    _qubies[x][y][z] = qb;
+                    var go = Instantiate(cubePrefab, pos, rot, transform);
+                    go.name = x + "," + y + "," + z;
+                    _qubies[x][y][z] = new Cubie(go);
                 }
             }
         }
@@ -155,14 +190,14 @@ public class CubeRotator
 {
     private bool _rotating;
 
-    private GameObject[][][] _qubies;
+    private Cubie[][][] _qubies;
 
     private Vector3 _pivot;
     private Vector3 _right;
     private Vector3 _up;
     private Vector3 _forward;
 
-    public CubeRotator(GameObject[][][] qubies, Vector3 pivot, Vector3 right, Vector3 up, Vector3 forward)
+    public CubeRotator(Cubie[][][] qubies, Vector3 pivot, Vector3 right, Vector3 up, Vector3 forward)
     {
         _qubies = qubies;
         _pivot = pivot;
@@ -197,12 +232,12 @@ public class CubeRotator
         var dir = clockwise ? 1 : -1;
         for (int y = 0; y < _qubies.Length; y++)
             for (int z = 0; z < _qubies.Length; z++)
-                _qubies[slice][y][z].transform.RotateAround(_pivot, _right, dir * 90);
+                _qubies[slice][y][z].RotateAround(Axis.X, _right, _pivot, dir * 90);
 
-        var toRotate = new GameObject[_qubies.Length][];
+        var toRotate = new Cubie[_qubies.Length][];
         for (int i = 0; i < _qubies.Length; i++)
         {
-            toRotate[i] = new GameObject[_qubies.Length];
+            toRotate[i] = new Cubie[_qubies.Length];
             for (int j = 0; j < _qubies.Length; j++)
             {
                 toRotate[i][j] = _qubies[slice][i][j];
@@ -216,12 +251,12 @@ public class CubeRotator
         var dir = clockwise ? 1 : -1;
         for (int x = 0; x < _qubies.Length; x++)
             for (int z = 0; z < _qubies.Length; z++)
-                _qubies[x][slice][z].transform.RotateAround(_pivot, _up, dir * 90);
+                _qubies[x][slice][z].RotateAround(Axis.Y, _up, _pivot, dir * 90);
 
-        var toRotate = new GameObject[_qubies.Length][];
+        var toRotate = new Cubie[_qubies.Length][];
         for (int i = 0; i < _qubies.Length; i++)
         {
-            toRotate[i] = new GameObject[_qubies.Length];
+            toRotate[i] = new Cubie[_qubies.Length];
             for (int j = 0; j < _qubies.Length; j++)
             {
                 toRotate[i][j] = _qubies[i][slice][j];
@@ -235,12 +270,12 @@ public class CubeRotator
         var dir = clockwise ? 1 : -1;
         for (int y = 0; y < _qubies.Length; y++)
             for (int x = 0; x < _qubies.Length; x++)
-                _qubies[x][y][slice].transform.RotateAround(_pivot, _forward, dir * 90);
+                _qubies[x][y][slice].RotateAround(Axis.Z, _forward, _pivot, dir * 90);
 
-        var toRotate = new GameObject[_qubies.Length][];
+        var toRotate = new Cubie[_qubies.Length][];
         for (int i = 0; i < _qubies.Length; i++)
         {
-            toRotate[i] = new GameObject[_qubies.Length];
+            toRotate[i] = new Cubie[_qubies.Length];
             for (int j = 0; j < _qubies.Length; j++)
             {
                 toRotate[i][j] = _qubies[i][j][slice];
@@ -249,7 +284,7 @@ public class CubeRotator
         InplaceRotate(toRotate, slice);
     }
 
-    private void InplaceRotate(GameObject[][] mat, int slice)
+    private void InplaceRotate(Cubie[][] mat, int slice)
     {
         var n = mat.Length;
         for (var x = 0; x < n / 2; x++)
